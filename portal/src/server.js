@@ -5,12 +5,15 @@ import { initDb } from "./db.js";
 import { ensurePasswordConfigured, requireAuth, verifyPassword } from "./auth.js";
 import {
   loginPage,
+  mappingEditPage,
+  mappingViewPage,
   runbookFormPage,
   runbooksListPage,
   secretRefFormPage,
   secretRefsListPage
 } from "./views.js";
 import { SecretProviderClient } from "./op-client.js";
+import { commitMappingUpdate, readMapping, validateMappingJson, writeMapping } from "./mapping.js";
 
 const config = getConfig();
 const app = express();
@@ -160,6 +163,41 @@ app.post("/logout", (req, res) => {
 app.get("/runbooks", requireAuth, async (req, res) => {
   const items = await app.locals.db.all("SELECT * FROM runbooks ORDER BY updated_at DESC, id DESC");
   res.send(runbooksListPage({ appName: config.appName, items, flash: takeFlash(req) }));
+});
+
+app.get("/mapping", requireAuth, async (req, res) => {
+  const mappingJson = await readMapping(config.repoRoot);
+  res.send(mappingViewPage({ appName: config.appName, mappingJson, flash: takeFlash(req) }));
+});
+
+app.get("/mapping/edit", requireAuth, async (req, res) => {
+  const mappingJson = await readMapping(config.repoRoot);
+  res.send(mappingEditPage({ appName: config.appName, mappingJson, flash: takeFlash(req) }));
+});
+
+app.post("/mapping/edit", requireAuth, async (req, res) => {
+  const mappingJson = String(req.body.mappingJson || "");
+  const validated = await validateMappingJson(config.repoRoot, mappingJson);
+
+  if (!validated.ok) {
+    return res.status(400).send(
+      mappingEditPage({
+        appName: config.appName,
+        mappingJson,
+        flash: validated.error
+      })
+    );
+  }
+
+  await writeMapping(config.repoRoot, validated.value);
+  const commitResult = await commitMappingUpdate(config.repoRoot);
+  if (!commitResult.ok) {
+    setFlash(req, `Mapping updated, but local git commit failed: ${commitResult.error}`);
+    return res.redirect("/mapping");
+  }
+
+  setFlash(req, "Mapping updated and committed locally.");
+  return res.redirect("/mapping");
 });
 
 app.get("/runbooks/new", requireAuth, (req, res) => {

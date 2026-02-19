@@ -21,6 +21,7 @@ function pageLayout({ title, body, appName, authenticated = false, active = "" }
     <h1>${escapeHtml(appName)}</h1>
     ${authenticated ? `<nav>
       <a href="/runbooks" ${active === "runbooks" ? 'class="active"' : ""}>Runbooks</a>
+      <a href="/mapping" ${active === "mapping" ? 'class="active"' : ""}>Mapping</a>
       <a href="/secret-refs" ${active === "secret-refs" ? 'class="active"' : ""}>SecretRefs</a>
       <form method="post" action="/logout"><button type="submit">Logout</button></form>
     </nav>` : ""}
@@ -203,5 +204,49 @@ export function secretRefFormPage({ appName, item = {}, action, submitLabel, fla
     appName,
     authenticated: true,
     active: "secret-refs"
+  });
+}
+
+export function mappingViewPage({ appName, mappingJson, flash }) {
+  const body = `
+    ${flashHtml(flash)}
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Mapping</h2>
+        <a class="button" href="/mapping/edit">Edit Mapping</a>
+      </div>
+      <p>Low-risk metadata only. Do not store plaintext secrets in this file.</p>
+      <pre class="code-block">${escapeHtml(mappingJson)}</pre>
+    </section>`;
+
+  return pageLayout({
+    title: "Mapping",
+    body,
+    appName,
+    authenticated: true,
+    active: "mapping"
+  });
+}
+
+export function mappingEditPage({ appName, mappingJson, flash }) {
+  const body = `
+    ${flashHtml(flash)}
+    <section class="panel">
+      <h2>Edit Mapping</h2>
+      <p>Only edit low-risk metadata. SecretRefs high-risk confirmation flow is not enabled yet.</p>
+      <form method="post" action="/mapping/edit" class="form-grid">
+        <label>JSON
+          <textarea name="mappingJson" class="mapping-textarea" required>${escapeHtml(mappingJson)}</textarea>
+        </label>
+        <button type="submit">Validate + Apply</button>
+      </form>
+    </section>`;
+
+  return pageLayout({
+    title: "Edit Mapping",
+    body,
+    appName,
+    authenticated: true,
+    active: "mapping"
   });
 }

@@ -9,11 +9,13 @@ services:
       APP_NAME: ${APP_NAME:-ShipkeyX Portal}
       PORT: 8080
       SQLITE_PATH: /data/portal.db
+      REPO_ROOT: /repo
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
       PORTAL_PASSWORD: ${PORTAL_PASSWORD:?set PORTAL_PASSWORD in .env}
       PORTAL_PASSWORD_RESET: ${PORTAL_PASSWORD_RESET:-false}
     volumes:
       - portal_data:/data
+      - ./:/repo
     ports:
       - "${PORTAL_PORT:-8080}:8080"
     healthcheck:

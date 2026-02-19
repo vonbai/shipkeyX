@@ -133,6 +133,20 @@ td {
   padding: 0.6rem 0.8rem;
 }
 
+.code-block {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fcfbf7;
+  padding: 0.9rem;
+  overflow-x: auto;
+}
+
+.mapping-textarea {
+  min-height: 420px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+
 @media (max-width: 720px) {
   .topbar {
     flex-direction: column;

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "connections": [],
+  "scan": {
+    "deterministic": true,
+    "includePaths": [],
+    "excludePaths": []
+  },
+  "future": {
+    "secretRefsApplyFlow": "stub_only"
+  }
+}
