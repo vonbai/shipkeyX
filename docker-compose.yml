@@ -1,0 +1,26 @@
+services:
+  portal:
+    build:
+      context: .
+      dockerfile: portal/Dockerfile
+    container_name: shipkeyx-portal
+    restart: unless-stopped
+    environment:
+      APP_NAME: ${APP_NAME:-ShipkeyX Portal}
+      PORT: 8080
+      SQLITE_PATH: /data/portal.db
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      PORTAL_PASSWORD: ${PORTAL_PASSWORD:?set PORTAL_PASSWORD in .env}
+      PORTAL_PASSWORD_RESET: ${PORTAL_PASSWORD_RESET:-false}
+    volumes:
+      - portal_data:/data
+    ports:
+      - "${PORTAL_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health').then((r)=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  portal_data:

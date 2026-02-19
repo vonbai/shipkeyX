@@ -1,0 +1,146 @@
+:root {
+  --bg: #f2efe9;
+  --panel: #fffcf5;
+  --text: #1f242c;
+  --accent: #0f5b70;
+  --border: #d4cfc4;
+  --error: #8a1c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 0%, #e6f6fb 0%, transparent 30%),
+    radial-gradient(circle at 80% 100%, #f7ead1 0%, transparent 35%),
+    var(--bg);
+}
+
+.topbar {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: #ffffffcc;
+  backdrop-filter: blur(2px);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+nav a,
+.button,
+button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+nav a.active {
+  background: #083b48;
+}
+
+main {
+  max-width: 1000px;
+  margin: 1rem auto 2rem;
+  padding: 0 1rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.panel.narrow {
+  max-width: 430px;
+  margin: 3rem auto;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  font: inherit;
+  background: #fff;
+}
+
+textarea {
+  min-height: 90px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem;
+}
+
+.error {
+  color: var(--error);
+}
+
+.flash {
+  border: 1px solid #b9dbc7;
+  background: #ecfff1;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}

@@ -222,6 +222,51 @@ Folder: shipkey
 - [GitHub CLI](https://cli.github.com/) (`gh`) — for GitHub Actions sync
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — for Cloudflare Workers sync
 
+## ShipkeyX Portal (Internal Deployment)
+
+This repository now includes a self-contained `portal/` web app (Node + Express + SQLite) that runs via Docker Compose and does not require Bun on the host.
+
+### Features
+
+- Single-password login (bcrypt hash stored in SQLite settings table)
+- Runbook/Connection CRUD:
+  - `name`, `description`, `tags`, `host`, `port`, `urls`, `commands`, `notes`
+- SecretRef CRUD (reference-only, no plaintext secrets):
+  - `name`, `kind`, `referenceUri` (`op://...`), `maskedPreview`, `tags`, `scope` (`project/env`)
+- Health endpoint: `GET /health`
+
+### Deploy
+
+1. Create an env file from the template:
+
+```bash
+cp portal/.env.example .env
+```
+
+2. Edit `.env` and set:
+- `PORTAL_PASSWORD` to a strong password
+- `SESSION_SECRET` to a long random string
+
+3. Build and start:
+
+```bash
+docker compose up -d --build
+```
+
+4. Open:
+
+```text
+http://<server-ip>:${PORTAL_PORT}
+```
+
+Default internal container port is `8080`; external port is controlled by `PORTAL_PORT` in `.env` (defaults to `8080`).
+
+### Notes
+
+- The SQLite database is persisted in Docker volume `portal_data` at `/data/portal.db`.
+- If you change `PORTAL_PASSWORD` later, set `PORTAL_PASSWORD_RESET=true` for one restart to rotate the stored hash.
+- The current 1Password integration is intentionally stubbed; SecretRefs store references and masked previews only.
+
 ## License
 
 MIT
